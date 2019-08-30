@@ -1,15 +1,23 @@
-
 import logging
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from downloader import download
+from downloader import download,get_file_size
 import os
+from telethon.sync import TelegramClient, events
+from telegram.ext.dispatcher import run_async
+import asyncio
+api_id = 12345
+api_hash = ""
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
+client = TelegramClient('name', api_id, api_hash)
+async def upload(url):
+        f = await client.send_file("@yourbot_name",url)
+        return(str(f.file.id))
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -18,15 +26,28 @@ def start(bot, update):
     update.message.reply_text('Hi This A bot To Upload Files to Telegram')
 
 
-
 def echo(bot, update):
     """Echo the user message."""
     update.message.reply_text("Downloading {}".format(update.message.text))
-    f = download(update.message.text)
-    Bt = telegram.Bot(token="926175130:AAG-j9CWDZREiQzGFYxNS2Q-OJiKkp7-jcc")
-    with open(f,'rb') as file:
-        Bt.send_document(update.message.chat_id,file,timeout=1000)
-    os.remove(f)
+    size = get_file_size(update.message.text)
+    if int(size)<1556925644:
+        f = download(update.message.text)
+        with client:
+            d =  client.loop.run_until_complete(upload(f))
+        Bt = telegram.Bot(token="TOKEN")
+        # with open(f,'rb') as file:
+        try:
+            Bt.send_document(update.message.chat_id,d,timeout=1000)
+        except(telegram.error.BadRequest):
+            try:
+                Bt.send_audio(update.message.chat_id,d,timeout=1000)
+                os.remove(f)
+            except(telegram.error.BadRequest):
+                Bt.send_video(update.message.chat_id,d,timeout=1000)
+                os.remove(f)
+        
+    else:
+        update.message.reply_text("File Is Bigger than 1.45GB")
 
 
 
