@@ -4,8 +4,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from downloader import download,get_file_size
 import os
 from telethon.sync import TelegramClient
-from telegram.ext.dispatcher import run_async
-import asyncio
 api_id = 12345
 api_hash = ""
 # Enable logging
@@ -50,10 +48,9 @@ def echo(bot, update):
         update.message.reply_text("File Is Bigger than 1.45GB")
 
 
-
 def error(bot, update):
     """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update)
+    logger.warning('Update "%s" caused error', update)
 
 
 def main():
