@@ -5,14 +5,17 @@ import urllib
 import shutil
 
 def get_file_size(url):
-    req = urllib.request.Request(url,method="HEAD")
-    fil = urllib.request.urlopen(req)
-    if fil.status==200:
-        return fil.headers['Content-Length']
+    if url.lower().startswith('http'):
+        req = urllib.request.Request(url,method="HEAD")
     else:
-        raise "ERROR Getting File"
+        raise ValueError from None
+    with urllib.request.urlopen(req) as fil:
+        if fil.status==200:
+            return fil.headers['Content-Length']
+        else:
+            raise "ERROR Getting File"
 
-    return len(fil.content)
+        return len(fil.content)
 
 def download(url):
     try:
