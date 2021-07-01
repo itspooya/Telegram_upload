@@ -43,7 +43,6 @@ def echo(bot, update):
             except(telegram.error.BadRequest):
                 Bt.send_video(update.message.chat_id,d,timeout=1000)
                 os.remove(f)
-        
     else:
         update.message.reply_text("File Is Bigger than 1.45GB")
 
