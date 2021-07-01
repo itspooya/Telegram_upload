@@ -3,7 +3,7 @@ import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from downloader import download,get_file_size
 import os
-from telethon.sync import TelegramClient, events
+from telethon.sync import TelegramClient
 from telegram.ext.dispatcher import run_async
 import asyncio
 api_id = 12345
